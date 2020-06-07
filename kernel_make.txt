@@ -1,0 +1,9 @@
+sudo apt install raspberrypi-kernel-headers build-essential bc git wget bison flex libssl-dev make libncurses-dev
+
+modprobe configs
+zcat /proc/config.gz > .config
+cp .config $KERNEL/.config
+KERNEL=kernel7l
+make oldconfig
+make menuconfig #just modify kernel released version name
+make -j4 zImage modules dtbs
