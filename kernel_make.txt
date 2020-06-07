@@ -7,3 +7,8 @@ KERNEL=kernel7l
 make oldconfig
 make menuconfig #just modify kernel released version name
 make -j4 zImage modules dtbs
+cp arch/arm/boot/dts/*.dtb /boot/
+cp arch/arm/boot/dts/overlays/*.dtb* /boot/overlays/
+cp arch/arm/boot/dts/overlays/README /boot/overlays/
+cp arch/arm/boot/zImage /boot/kernel-ben.img
+vim /boot/config.txt # add a line: kernel=kernel-ben.img
