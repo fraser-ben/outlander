@@ -1,6 +1,10 @@
 #include <linux/module.h>     /* Needed by all modules */ 
 #include <linux/kernel.h>     /* Needed for KERN_INFO */ 
 #include <linux/init.h>       /* Needed for the macros */ 
+
+#include <sound/soc.h>
+#include <sound/pcm.h>
+#include <sound/pcm_params.h>
   
 ///< The license type -- this affects runtime behavior 
 MODULE_LICENSE("GPL"); 
