@@ -1,6 +1,6 @@
 
 KERNEL_DIR = /home/pi/linux
-obj-m = test.o
+obj-m = sound_module.o
 
 all:
 	make -C ${KERNEL_DIR} M=$(PWD) modules
