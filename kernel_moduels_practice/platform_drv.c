@@ -18,8 +18,8 @@ enum {
     OUTLANDER_DAI_MAX,
 };
 
+#if 0 // support in kernel version < 5.4
 // OT: outlander
-
 static struct snd_soc_dai_link outlander_dai[] = {
     [OUTLANDER_DAI_PLAYBACK0] = {
 	.name = "OUTLANDER PCM",
@@ -38,6 +38,7 @@ static struct snd_soc_card outlander_card = {
     .dai_link = outlander_dai,
     .num_links = 1,
 };
+#endif
 
 extern void dump_stack(void);
 void backtrace(void)
