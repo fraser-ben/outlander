@@ -39,6 +39,28 @@ PRODUCTS = {
 }
 # user_carts: { user_id: { item_id: quantity } }
 user_carts = {}
+CARTS_FILE = "carts.json"
+
+def load_carts():
+    global user_carts
+    if os.path.exists(CARTS_FILE):
+        try:
+            with open(CARTS_FILE, 'r', encoding='utf-8') as f:
+                user_carts = json.load(f)
+        except Exception as e:
+            print(f"Error loading carts: {e}", flush=True)
+            user_carts = {}
+    else:
+        user_carts = {}
+
+def save_carts():
+    try:
+        with open(CARTS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(user_carts, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error saving carts: {e}", flush=True)
+
+load_carts()
 
 ORDERS_FILE = "orders.csv"
 
@@ -88,8 +110,11 @@ def process_event(event):
         message = event.get('message', {})
         if message.get('type') == "text":
             text = message.get('text', '').upper().strip()
+            print(f"DEBUG: Received text message: {message.get('text')}", flush=True)
             if text == "SHOP":
                 send_shop_menu(reply_token)
+            elif text == "CART":
+                send_cart_summary(reply_token, user_id)
             else:
                 match = re.match(r'^([ABCE])\s*(\d+)$', text)
                 if match:
@@ -116,6 +141,7 @@ def process_event(event):
         elif action == 'clear':
             if user_id in user_carts:
                 del user_carts[user_id]
+                save_carts()
             send_cart_summary(reply_token, user_id, "🛒 購物車已清空")
 
 def update_cart(user_id, item_id, delta):
@@ -130,6 +156,9 @@ def update_cart(user_id, item_id, delta):
             del user_carts[user_id][item_id]
     else:
         user_carts[user_id][item_id] = new_qty
+    
+    save_carts()
+
 
 def send_shop_menu(reply_token):
     flex_contents = {
@@ -276,6 +305,7 @@ def handle_checkout(reply_token, user_id):
     # Clear Cart
     if user_id in user_carts:
         del user_carts[user_id]
+        save_carts()
     
     # Reply confirmation
     summary_text = f"🎉 訂單已成功送出！\n\n訂單編號：#{order_id}\n時間：{timestamp}\n總計：${total_price}\n\n我們將盡快為您處理，謝謝！"
